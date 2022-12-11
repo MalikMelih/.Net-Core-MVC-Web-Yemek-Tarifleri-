@@ -5,11 +5,29 @@
     Layout = "~/Views/Shared/_yonetimtema.cshtml";
 }
 
-<h1>Kullanicilar</h1>
+<h1>Kullanıcılar</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="KullaniciEkle">Kullanıcı Oluştur</a>
 </p>
+
+@using (Html.BeginForm())
+{
+    <div class="row">
+        <div class="col-6">
+            <select id="listelemeturu" name="listelemeturu" class="form-control">
+                <option value="Tümü">Tümü</option>
+                <option value="Aktif">Aktif</option>
+                <option value="Pasif">Pasif</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <input type="submit" value="Listele" class="btn btn-primary"/>
+        </div>
+        <br/>
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -33,9 +51,6 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Aktif)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Silindi)
             </th>
             <th></th>
         </tr>
@@ -65,12 +80,9 @@
                 @Html.DisplayFor(modelItem => item.Aktif)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Silindi)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.KullaniciId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.KullaniciId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.KullaniciId">Delete</a>
+                <a asp-action="KullaniciOnay" asp-route-id="@item.KullaniciId" onclick="return confirm('Kullanıcı hesap durumu değiştirilecek emin misiniz?')">Aktif/Pasif</a> |
+                <a asp-action="KullaniciGetir" asp-route-id="@item.KullaniciId">Düzenle</a> |
+                <a asp-action="KullaniciSil" asp-route-id="@item.KullaniciId" onclick="return confirm('Kullanıcıyı silmek istediğinize emin misiniz?')">Sil</a>
             </td>
         </tr>
 }

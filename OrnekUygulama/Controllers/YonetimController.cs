@@ -12,14 +12,6 @@ namespace OrnekUygulama.Controllers
         {
             return View();
         }
-        public IActionResult Kullanicilar()
-        {
-            return View();
-        }
-        public IActionResult Bilgilerim()
-        {
-            return View();
-        }
 
         //                                              <!-                            Sayfalar START                             -!>
         //                                              <!-                            Sayfalar START                             -!>
@@ -184,7 +176,7 @@ namespace OrnekUygulama.Controllers
         }
         public IActionResult TarifSil(int id)
         {
-            var tarif = db.YemekTarifleris.Where(t => t.Silindi == false && t.KategoriId == id).FirstOrDefault();
+            var tarif = db.YemekTarifleris.Where(t => t.Silindi == false && t.TarifId == id).FirstOrDefault();
             tarif.Silindi = true;
             db.YemekTarifleris.Update(tarif);
             db.SaveChanges();
@@ -232,7 +224,98 @@ namespace OrnekUygulama.Controllers
         }
 
         //                                              <!-                            Yorumlar END                             -!>
-        //                                              <!-                            Yorumlar END                             -!>
+        //                                              <!-                            Kullanıcılar START                       -!>
+
+        public IActionResult Kullanicilar()
+        {
+            var kullanicilar = db.Kullanicilars.Where(k => k.Silindi == false).OrderBy(k => k.KullaniciId).ToList();
+            return View(kullanicilar);
+        }
+        [HttpPost]
+        public IActionResult Kullanicilar(string listelemeturu)
+        {
+            var kullanicilar = db.Kullanicilars.Where(k => k.Silindi == false).OrderBy(k => k.KullaniciId).ToList();
+
+            switch (listelemeturu)
+            {
+                case "Aktif": kullanicilar = db.Kullanicilars.Where(k => k.Silindi == false && k.Aktif == true).OrderBy(k => k.KullaniciId).ToList(); break;
+                case "Pasif": kullanicilar = db.Kullanicilars.Where(k => k.Silindi == false && k.Aktif == false).OrderBy(k => k.KullaniciId).ToList(); break;
+            }
+            return View(kullanicilar);
+        }
+        public IActionResult KullaniciEkle()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult KullaniciEkle(Kullanicilar k)
+        {
+            k.Silindi = false;
+            db.Kullanicilars.Add(k);
+            db.SaveChanges();
+            return RedirectToAction("Kullanicilar");
+        }
+        public IActionResult KullaniciGetir(int id)
+        {
+            var kullanici = db.Kullanicilars.Where(k => k.Silindi == false && k.KullaniciId == id).FirstOrDefault();
+
+            return View("KullaniciGuncelle", kullanici);
+        }
+        public IActionResult KullaniciGuncelle(Kullanicilar kln)
+        {
+            var kullanici = db.Kullanicilars.Where(k => k.Silindi == false && k.KullaniciId == kln.KullaniciId).FirstOrDefault();
+            kullanici.Adi = kln.Adi;
+            kullanici.Soyadi = kln.Soyadi;
+            kullanici.Eposta = kln.Eposta;
+            kullanici.Telefon = kln.Telefon;
+            kullanici.Parola = kln.Parola;
+            kullanici.Yetki = kln.Yetki;
+            kullanici.Aktif = kln.Aktif;
+            db.Kullanicilars.Update(kullanici);
+            db.SaveChanges();
+            return RedirectToAction("Kullanicilar");
+        }
+        public IActionResult KullaniciOnay(int id)
+        {
+            var kullanici = db.Kullanicilars.Where(k => k.Silindi == false && k.KullaniciId == id).FirstOrDefault();
+            kullanici.Aktif = Convert.ToBoolean(-1 * Convert.ToInt32(kullanici.Aktif) + 1);
+            db.Kullanicilars.Update(kullanici);
+            db.SaveChanges();
+            return RedirectToAction("Kullanicilar");
+        }
+        public IActionResult KullaniciSil(int id)
+        {
+            var kullanici = db.Kullanicilars.Where(k => k.Silindi == false && k.KullaniciId == id).FirstOrDefault();
+            kullanici.Silindi = true;
+            db.Kullanicilars.Update(kullanici);
+            db.SaveChanges();
+            return RedirectToAction("Kullanicilar");
+        }
+
+        //                                              <!-                            Kullanıcılar END                             -!>
+        //                                              <!-                            Bilgilerim START                             -!>
+
+        public IActionResult Bilgilerim()
+        {
+            var kullanici = db.Kullanicilars.Where(b => b.KullaniciId == 1).FirstOrDefault();
+            return View(kullanici);
+        }
+        [HttpPost]
+        public IActionResult Bilgilerim(Kullanicilar kln)
+        {
+            var kullanici = db.Kullanicilars.Where(k => k.Silindi == false && k.KullaniciId == kln.KullaniciId).FirstOrDefault();
+            kullanici.Adi = kln.Adi;
+            kullanici.Soyadi = kln.Soyadi;
+            kullanici.Eposta = kln.Eposta;
+            kullanici.Telefon = kln.Telefon;
+            kullanici.Parola = kln.Parola;
+            db.Kullanicilars.Update(kullanici);
+            db.SaveChanges();
+            return RedirectToAction("Bilgilerim");
+        }
+
+        //                                              <!-                            Bilgilerim END                             -!>
+        //                                              <!-                            Bilgilerim START                             -!>
 
         public IActionResult CikisYap()
         {

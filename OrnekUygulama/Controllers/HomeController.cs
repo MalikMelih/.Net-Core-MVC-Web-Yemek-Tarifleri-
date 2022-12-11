@@ -18,6 +18,8 @@ namespace OrnekUygulama.Controllers
             YemektarifleriDbContext db = new YemektarifleriDbContext();
             var sayfa = db.Sayfalars.Where(a => a.Silindi == false && a.Aktif == true && a.SayfaId == id).FirstOrDefault();
             return View(sayfa);
+
+
         }
 
         public IActionResult Privacy()
